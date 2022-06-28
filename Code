@@ -74,19 +74,13 @@ const uint32_t connectTimeoutMs = 5000;
 int P1 = 15;    // Button SET MENU    \\D6
 
 //*****************Declarating Wifi & Client***********************//
-const char* ssid = "Visible Network";
-const char* pass = "poiuytrewqwer";
-
-//const char* ssid1 = "Waskita Wifi";
-//const char* pass1 = "";
 const char* ssid1 = "Waskita Wifi";
 const char* pass1 = "";
 
 const char* ssid2 = "Waskita Wifi 2";
 const char* pass2 = "";
 
-//const char* mqtt_server1 = "192.168.43.187";
-const char* mqtt_server = "10.10.55.10";
+const char* mqtt_server = "10.10.55.10";      //Tergantung IP pada Server
 
 //***********************Setup Menu Mode***************************//
 enum Mode
@@ -433,12 +427,12 @@ void setup() {
   pinMode(BUILTIN_LED, OUTPUT);
   client.setCallback(callback);
 
-  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
+  rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));       //adjust time on RTC
   if (! rtc.begin()) {
     Serial.print("rtc is NOT running!");
   }
 
-  if (!SD.begin(chipSelect)) {
+  if (!SD.begin(chipSelect)) {                          //Setting up SD Card
     //Serial.print("SDCARD GAGAL");
     lcd.setCursor(0, 1);
     lcd.print("SDCARD GAGAL");
@@ -551,25 +545,25 @@ void loop() {
   snprintf (msg, MSG_BUFFER_SIZE, "%ld:%ld:%ld", hours2, minutes2, seconds2);
   Serial.print("Publish message: ");
   Serial.println(msg);
-  client.publish("event", msg);
+  client.publish("WheelLoader1/WaktuTotal", msg);         //event dapat diganti menjadi topik yang akan diinginkan (harus sama seperti topik pada broker), contohnya : WheelLoader1/WaktuTotal
 
   snprintf (msg, MSG_BUFFER_SIZE, "%ld:%ld:%ld", hours, minutes, seconds);
-  client.publish("event1", msg);
+  client.publish("WheelLoader1/WaktuHidup", msg);         //event dapat diganti menjadi topik yang akan diinginkan (harus sama seperti topik pada broker), contohnya : WheelLoader1/WaktuHidup
 
   snprintf (msg, MSG_BUFFER_SIZE, "%ld", seconds);
-  client.publish("event2", msg);
+  client.publish("WheelLoader1/detik", msg);              //event dapat diganti menjadi topik yang akan diinginkan (harus sama seperti topik pada broker), contohnya : WheelLoader1/detik
 
   snprintf (msg, MSG_BUFFER_SIZE, "%ld/%ld/%ld", now.day(), now.month(), now.year());
-  client.publish("event3", msg);
+  client.publish("WheelLoader1/WaktuSekarang", msg);      //event dapat diganti menjadi topik yang akan diinginkan (harus sama seperti topik pada broker), contohnya : WheelLoader1/WaktuSekarang        
 
   if (seconds % 60 == 0) {
     Peringatan();
     if (status_SDCard == 0) {
       snprintf (msg, MSG_BUFFER_SIZE, "SD Card Gagal Terbaca");
-      client.publish("event4/SD_Card", msg);
+      client.publish("WheelLoader1/SDCard", msg);              //event dapat diganti menjadi topik yang akan diinginkan (harus sama seperti topik pada broker), contohnya : WheelLoader1/SDCard
     } else {
       snprintf (msg, MSG_BUFFER_SIZE, "SD Card Berhasil Terbaca");
-      client.publish("event4/SD_Card", msg);
+      client.publish("WheelLoader1/SDCard", msg);
     }
   }
 
